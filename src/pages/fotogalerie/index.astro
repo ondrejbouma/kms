@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { base } from '../../utils/base';
+
+// Jednoduchá galerie – pro přidání nové fotky stačí nahrát obrázek do
+// public/images/fotogalerie/ a doplnit záznam do pole níže.
+
+const fotografie = [
+  { soubor: '01-verejne-projednani.svg', popis: 'Veřejné projednání úprav centra obce' },
+  { soubor: '02-den-deti.svg', popis: 'Den dětí na návsi' },
+  { soubor: '03-podzimni-brigada.svg', popis: 'Podzimní úklidová brigáda' },
+  { soubor: '04-oprava-chodniku.svg', popis: 'Oprava chodníku na ulici Sadová' },
+  { soubor: '05-nove-lavicky.svg', popis: 'Nové lavičky na návsi' },
+  { soubor: '06-sousedske-setkani.svg', popis: 'Sousedské setkání s komisí' },
+  { soubor: '07-historie-navsi.svg', popis: 'Dobová fotografie návsi' },
+  { soubor: '08-zeleni-v-obci.svg', popis: 'Zeleň v obci' },
+];
+---
+
+<Layout title="Fotogalerie" popis="Fotografie z akcí a proměn veřejného prostoru v obci.">
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h1>Fotogalerie</h1>
+          <p>Fotografie z akcí komise a proměn veřejného prostoru v obci. Klikněte na fotografii pro zvětšení.</p>
+        </div>
+      </div>
+
+      <div class="galerie-mrizka">
+        {fotografie.map((foto, index) => (
+          <a href={`#foto-${index}`} class="galerie-polozka" id={`odkaz-${index}`}>
+            <img src={`${base}images/fotogalerie/${foto.soubor}`} alt={foto.popis} loading="lazy" />
+            <p class="galerie-popis">{foto.popis}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {fotografie.map((foto, index) => (
+    <div class="lightbox" id={`foto-${index}`}>
+      <div class="lightbox__ramecek">
+        <img
+          src={`${base}images/fotogalerie/${foto.soubor}`}
+          alt={foto.popis}
+          class="lightbox__obrazek"
+        />
+        <p class="lightbox__popis">{foto.popis}</p>
+      </div>
+      <a href="#" class="lightbox__zavrit" aria-label="Zavřít zvětšenou fotografii">Zavřít ✕</a>
+    </div>
+  ))}
+</Layout>

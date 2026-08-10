@@ -1,0 +1,131 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import { base } from '../utils/base';
+
+const vsechnyAktuality = (await getCollection('aktuality'))
+  .sort((a, b) => b.data.datum.valueOf() - a.data.datum.valueOf())
+  .slice(0, 3);
+
+const nasledujiciAkce = (await getCollection('akce'))
+  .filter((a) => a.data.datum.valueOf() >= Date.now() - 1000 * 60 * 60 * 24)
+  .sort((a, b) => a.data.datum.valueOf() - b.data.datum.valueOf())[0];
+---
+
+<Layout title="Úvod">
+  <section class="hero">
+    <div class="obsah">
+      <h1>Komise místní samosprávy</h1>
+      <p>
+        Jsme poradní orgán zastupitelstva, který pomáhá rozvíjet naši obec –
+        od veřejného prostoru přes komunikaci s občany až po přípravu
+        veřejných projednání. Sledujte, na čem právě pracujeme, a zapojte se.
+      </p>
+      <div class="hero__akce">
+        <a href={`${base}aktuality/`} class="tlacitko tlacitko--svetle">Poslední aktuality</a>
+        <a href={`${base}kalendar/`} class="tlacitko tlacitko--obrys">Kalendář akcí</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h2>Rychlá orientace</h2>
+          <p>Vše důležité o práci komise na jednom místě.</p>
+        </div>
+      </div>
+
+      <div class="rychle-odkazy">
+        <a href={`${base}aktuality/`} class="rychly-odkaz">
+          <span class="rychly-odkaz__ikona" aria-hidden="true">📰</span>
+          <h3>Aktuality</h3>
+          <p>Novinky, oznámení a průběžné informace z jednání komise.</p>
+        </a>
+        <a href={`${base}clanky/`} class="rychly-odkaz">
+          <span class="rychly-odkaz__ikona" aria-hidden="true">📖</span>
+          <h3>Články</h3>
+          <p>Podrobnější texty o dění, historii a životě v obci.</p>
+        </a>
+        <a href={`${base}dokumenty/`} class="rychly-odkaz">
+          <span class="rychly-odkaz__ikona" aria-hidden="true">📄</span>
+          <h3>Dokumenty</h3>
+          <p>Zápisy z jednání komise ke stažení ve formátu PDF.</p>
+        </a>
+        <a href={`${base}kalendar/`} class="rychly-odkaz">
+          <span class="rychly-odkaz__ikona" aria-hidden="true">🗓️</span>
+          <h3>Kalendář akcí</h3>
+          <p>Veřejná projednání, brigády a setkání s občany.</p>
+        </a>
+        <a href={`${base}fotogalerie/`} class="rychly-odkaz">
+          <span class="rychly-odkaz__ikona" aria-hidden="true">📷</span>
+          <h3>Fotogalerie</h3>
+          <p>Fotografie z akcí a proměn veřejného prostoru v obci.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {nasledujiciAkce && (
+    <section class="sekce sekce--jemna">
+      <div class="obsah">
+        <div class="sekce__hlavicka">
+          <div>
+            <h2>Nejbližší akce</h2>
+            <p>Přijďte se osobně zapojit do dění v obci.</p>
+          </div>
+          <a href={`${base}kalendar/`} class="odkaz-vice">Celý kalendář →</a>
+        </div>
+
+        <div class="akce-polozka">
+          <div class="akce-datum">
+            <span class="akce-datum__den">
+              {new Intl.DateTimeFormat('cs-CZ', { day: 'numeric' }).format(nasledujiciAkce.data.datum)}
+            </span>
+            <span class="akce-datum__mesic">
+              {new Intl.DateTimeFormat('cs-CZ', { month: 'short' }).format(nasledujiciAkce.data.datum)}
+            </span>
+          </div>
+          <div class="akce-obsah">
+            <h3>{nasledujiciAkce.data.title}</h3>
+            <p class="akce-meta">
+              {nasledujiciAkce.data.cas && <span>🕒 {nasledujiciAkce.data.cas}</span>}
+              {nasledujiciAkce.data.misto && <span>📍 {nasledujiciAkce.data.misto}</span>}
+            </p>
+            <p style="margin:0; color: var(--barva-text-slaba);">{nasledujiciAkce.data.popis}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h2>Poslední aktuality</h2>
+          <p>Co se v obci a v komisi aktuálně děje.</p>
+        </div>
+        <a href={`${base}aktuality/`} class="odkaz-vice">Všechny aktuality →</a>
+      </div>
+
+      {vsechnyAktuality.length > 0 ? (
+        <div class="mrizka mrizka--3">
+          {vsechnyAktuality.map((polozka) => (
+            <Card
+              href={`${base}aktuality/${polozka.id}/`}
+              title={polozka.data.title}
+              perex={polozka.data.perex}
+              datum={polozka.data.datum}
+              obrazek={polozka.data.obrazek}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="prazdny-stav">Zatím žádné aktuality.</p>
+      )}
+    </div>
+  </section>
+</Layout>

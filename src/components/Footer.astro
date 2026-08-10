@@ -1,0 +1,39 @@
+---
+import { base } from '../utils/base';
+
+const rok = 2026;
+---
+
+<footer class="paticka">
+  <div class="obsah">
+    <div>
+      <h4>Komise místní samosprávy</h4>
+      <p style="color: var(--barva-text-slaba); font-size: 0.92rem; max-width: 32ch;">
+        Poradní orgán zastupitelstva pro rozvoj obce, veřejný prostor a komunikaci s občany.
+      </p>
+    </div>
+
+    <div>
+      <h4>Rychlé odkazy</h4>
+      <ul>
+        <li><a href={`${base}aktuality/`}>Aktuality</a></li>
+        <li><a href={`${base}dokumenty/`}>Zápisy z jednání</a></li>
+        <li><a href={`${base}kalendar/`}>Kalendář akcí</a></li>
+        <li><a href={`${base}fotogalerie/`}>Fotogalerie</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h4>Kontakt</h4>
+      <ul>
+        <li>komise@example.cz</li>
+        <li>Obecní úřad, Náměstí 1</li>
+        <li>Úřední hodiny: Po, St 8–17 h</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="paticka__spodek">
+    © {rok} Komise místní samosprávy · Obsah webu je veřejně dostupný
+  </div>
+</footer>

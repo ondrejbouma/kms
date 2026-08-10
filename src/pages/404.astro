@@ -1,0 +1,16 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { base } from '../utils/base';
+---
+
+<Layout title="Stránka nenalezena">
+  <section class="sekce text-center">
+    <div class="obsah">
+      <h1>404 – Stránka nenalezena</h1>
+      <p style="color: var(--barva-text-slaba); max-width: 50ch; margin-inline: auto;">
+        Omlouváme se, hledaná stránka neexistuje nebo byla přesunuta.
+      </p>
+      <p><a href={base} class="tlacitko tlacitko--plne">Zpět na úvodní stránku</a></p>
+    </div>
+  </section>
+</Layout>

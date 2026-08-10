@@ -1,0 +1,36 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { base } from '../utils/base';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  popis?: string;
+}
+
+const {
+  title,
+  popis = 'Web komise místní samosprávy – aktuality, dokumenty, kalendář akcí a fotogalerie.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={popis} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} · Komise místní samosprávy</title>
+  </head>
+  <body>
+    <a href="#hlavni-obsah" class="skip-link">Přeskočit na hlavní obsah</a>
+    <Header />
+    <main id="hlavni-obsah">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

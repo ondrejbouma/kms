@@ -1,0 +1,47 @@
+---
+import { base } from '../utils/base';
+
+const polozkyMenu = [
+  { href: '/', label: 'Úvod' },
+  { href: '/aktuality/', label: 'Aktuality' },
+  { href: '/clanky/', label: 'Články' },
+  { href: '/dokumenty/', label: 'Dokumenty' },
+  { href: '/kalendar/', label: 'Kalendář akcí' },
+  { href: '/fotogalerie/', label: 'Fotogalerie' },
+];
+
+const aktualniCesta = new URL(Astro.request.url).pathname.replace(base, '/');
+
+function jeAktivni(href) {
+  if (href === '/') return aktualniCesta === '/' || aktualniCesta === '';
+  return aktualniCesta.startsWith(href);
+}
+---
+
+<header class="hlavicka">
+  <div class="obsah hlavicka__radek">
+    <a href={base} class="znacka">
+      <span class="znacka__ikona" aria-hidden="true">KMS</span>
+      <span class="znacka__text">
+        Komise místní samosprávy
+        <small>Otevřená a srozumitelná samospráva</small>
+      </span>
+    </a>
+
+    <input type="checkbox" id="menu-prepinac" class="menu-prepinac" aria-hidden="true" />
+    <label for="menu-prepinac" class="menu-tlacitko" aria-label="Otevřít hlavní menu" role="button" tabindex="0">
+      <span></span>
+    </label>
+
+    <nav class="hlavni-nabidka" aria-label="Hlavní navigace">
+      {polozkyMenu.map((polozka) => (
+        <a
+          href={`${base}${polozka.href}`.replace(/\/{2,}/g, '/')}
+          aria-current={jeAktivni(polozka.href) ? 'page' : undefined}
+        >
+          {polozka.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

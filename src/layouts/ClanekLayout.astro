@@ -1,0 +1,42 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  perex: string;
+  datum: Date;
+  obrazek?: string;
+  autor?: string;
+  navratOdkaz: string;
+  navratText: string;
+}
+
+const { title, perex, datum, obrazek, autor, navratOdkaz, navratText } = Astro.props;
+
+const datumFormat = new Intl.DateTimeFormat('cs-CZ', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(datum);
+---
+
+<Layout title={title} popis={perex}>
+  <div class="clanek-hlavicka">
+    <div class="obsah">
+      <p class="drobecky">
+        <a href={navratOdkaz}>{navratText}</a> / {title}
+      </p>
+      <p class="stitek-data">📅 {datumFormat}{autor ? ` · ${autor}` : ''}</p>
+      <h1>{title}</h1>
+      <p style="color: var(--barva-text-slaba); font-size: 1.1rem; max-width: 65ch;">{perex}</p>
+      {obrazek && <img src={obrazek} alt="" class="clanek-obrazek-uvod" />}
+    </div>
+  </div>
+
+  <div class="obsah clanek-obsah">
+    <slot />
+    <p style="margin-top: 3rem;">
+      <a href={navratOdkaz}>← {navratText}</a>
+    </p>
+  </div>
+</Layout>

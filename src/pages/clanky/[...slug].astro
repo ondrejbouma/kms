@@ -1,0 +1,28 @@
+---
+import { getCollection, render } from 'astro:content';
+import ClanekLayout from '../../layouts/ClanekLayout.astro';
+import { base } from '../../utils/base';
+
+export async function getStaticPaths() {
+  const polozky = await getCollection('clanky');
+  return polozky.map((polozka) => ({
+    params: { slug: polozka.id },
+    props: { polozka },
+  }));
+}
+
+const { polozka } = Astro.props;
+const { Content } = await render(polozka);
+---
+
+<ClanekLayout
+  title={polozka.data.title}
+  perex={polozka.data.perex}
+  datum={polozka.data.datum}
+  obrazek={polozka.data.obrazek}
+  autor={polozka.data.autor}
+  navratOdkaz={`${base}clanky/`}
+  navratText="Články"
+>
+  <Content />
+</ClanekLayout>

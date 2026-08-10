@@ -1,0 +1,84 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const vsechnyAkce = await getCollection('akce');
+
+const dnes = Date.now();
+const nadchazejici = vsechnyAkce
+  .filter((a) => a.data.datum.valueOf() >= dnes - 1000 * 60 * 60 * 24)
+  .sort((a, b) => a.data.datum.valueOf() - b.data.datum.valueOf());
+
+const probehle = vsechnyAkce
+  .filter((a) => a.data.datum.valueOf() < dnes - 1000 * 60 * 60 * 24)
+  .sort((a, b) => b.data.datum.valueOf() - a.data.datum.valueOf());
+---
+
+<Layout title="Kalendář akcí" popis="Veřejná projednání, brigády a setkání pořádaná komisí místní samosprávy.">
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h1>Kalendář akcí</h1>
+          <p>Veřejná projednání, brigády a setkání s občany.</p>
+        </div>
+      </div>
+
+      <h2 class="rok-oddil">Nadcházející akce</h2>
+      {nadchazejici.length > 0 ? (
+        <div class="seznam-akci">
+          {nadchazejici.map((akce) => (
+            <article class="akce-polozka">
+              <div class="akce-datum">
+                <span class="akce-datum__den">
+                  {new Intl.DateTimeFormat('cs-CZ', { day: 'numeric' }).format(akce.data.datum)}
+                </span>
+                <span class="akce-datum__mesic">
+                  {new Intl.DateTimeFormat('cs-CZ', { month: 'short' }).format(akce.data.datum)}
+                </span>
+              </div>
+              <div class="akce-obsah">
+                <h3>{akce.data.title}</h3>
+                <p class="akce-meta">
+                  {akce.data.cas && <span>🕒 {akce.data.cas}</span>}
+                  {akce.data.misto && <span>📍 {akce.data.misto}</span>}
+                </p>
+                <p style="margin:0;">{akce.data.popis}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="prazdny-stav">Momentálně nejsou naplánované žádné akce. Sledujte tuto stránku, brzy přibudou nové termíny.</p>
+      )}
+
+      {probehle.length > 0 && (
+        <>
+          <h2 class="rok-oddil">Proběhlé akce</h2>
+          <div class="seznam-akci">
+            {probehle.map((akce) => (
+              <article class="akce-polozka akce-polozka--minula">
+                <div class="akce-datum">
+                  <span class="akce-datum__den">
+                    {new Intl.DateTimeFormat('cs-CZ', { day: 'numeric' }).format(akce.data.datum)}
+                  </span>
+                  <span class="akce-datum__mesic">
+                    {new Intl.DateTimeFormat('cs-CZ', { month: 'short' }).format(akce.data.datum)}
+                  </span>
+                </div>
+                <div class="akce-obsah">
+                  <h3>{akce.data.title}</h3>
+                  <p class="akce-meta">
+                    {akce.data.cas && <span>🕒 {akce.data.cas}</span>}
+                    {akce.data.misto && <span>📍 {akce.data.misto}</span>}
+                  </p>
+                  <p style="margin:0;">{akce.data.popis}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </section>
+</Layout>

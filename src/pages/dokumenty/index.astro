@@ -1,0 +1,64 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { base } from '../../utils/base';
+
+const dokumenty = (await getCollection('dokumenty')).sort(
+  (a, b) => b.data.datum.valueOf() - a.data.datum.valueOf()
+);
+
+// Seskupení dokumentů podle roku
+const podleRoku = new Map();
+for (const dokument of dokumenty) {
+  const rok = dokument.data.datum.getFullYear();
+  if (!podleRoku.has(rok)) podleRoku.set(rok, []);
+  podleRoku.get(rok).push(dokument);
+}
+---
+
+<Layout title="Dokumenty ke stažení" popis="Zápisy z jednání komise místní samosprávy ke stažení ve formátu PDF.">
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h1>Dokumenty ke stažení</h1>
+          <p>Zápisy z jednání komise ve formátu PDF, řazené od nejnovějších.</p>
+        </div>
+      </div>
+
+      {dokumenty.length > 0 ? (
+        [...podleRoku.entries()].map(([rok, polozky]) => (
+          <div>
+            <h2 class="rok-oddil">{rok}</h2>
+            <ul class="seznam-dokumentu">
+              {polozky.map((dokument) => (
+                <li class="dokument">
+                  <div class="dokument__ikona" aria-hidden="true">PDF</div>
+                  <div class="dokument__info">
+                    <h3>{dokument.data.title}</h3>
+                    <p class="dokument__meta">
+                      {new Intl.DateTimeFormat('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' }).format(dokument.data.datum)}
+                      {dokument.data.kategorie && ` · ${dokument.data.kategorie}`}
+                    </p>
+                    {dokument.data.popis && (
+                      <p class="dokument__meta" style="margin-top: 0.35rem;">{dokument.data.popis}</p>
+                    )}
+                  </div>
+                  <a
+                    class="tlacitko tlacitko--plne dokument__stahnout"
+                    href={`${base}${dokument.data.soubor.replace(/^\//, '')}`}
+                    download
+                  >
+                    Stáhnout PDF
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      ) : (
+        <p class="prazdny-stav">Zatím zde nejsou žádné dokumenty ke stažení.</p>
+      )}
+    </div>
+  </section>
+</Layout>

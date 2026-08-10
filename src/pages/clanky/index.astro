@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Card from '../../components/Card.astro';
+import { base } from '../../utils/base';
+
+const polozky = (await getCollection('clanky')).sort(
+  (a, b) => b.data.datum.valueOf() - a.data.datum.valueOf()
+);
+---
+
+<Layout title="Články" popis="Delší texty o dění, historii a životě v obci.">
+  <section class="sekce">
+    <div class="obsah">
+      <div class="sekce__hlavicka">
+        <div>
+          <h1>Články</h1>
+          <p>Podrobnější texty, návody a zajímavosti ze života obce.</p>
+        </div>
+      </div>
+
+      {polozky.length > 0 ? (
+        <div class="mrizka mrizka--3">
+          {polozky.map((polozka) => (
+            <Card
+              href={`${base}clanky/${polozka.id}/`}
+              title={polozka.data.title}
+              perex={polozka.data.perex}
+              datum={polozka.data.datum}
+              obrazek={polozka.data.obrazek}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="prazdny-stav">Zatím žádné články.</p>
+      )}
+    </div>
+  </section>
+</Layout>

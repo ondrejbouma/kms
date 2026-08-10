@@ -1,0 +1,30 @@
+---
+interface Props {
+  href: string;
+  title: string;
+  perex: string;
+  datum: Date;
+  obrazek?: string;
+}
+
+const { href, title, perex, datum, obrazek } = Astro.props;
+
+const datumFormat = new Intl.DateTimeFormat('cs-CZ', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(datum);
+---
+
+<article class="karta">
+  {obrazek ? (
+    <img src={obrazek} alt="" class="karta__obrazek" loading="lazy" />
+  ) : (
+    <div class="karta__obrazek karta__obrazek--zastupny" aria-hidden="true">📰</div>
+  )}
+  <div class="karta__obsah">
+    <p class="stitek-data">{datumFormat}</p>
+    <h3><a href={href}>{title}</a></h3>
+    <p class="karta__perex">{perex}</p>
+  </div>
+</article>
